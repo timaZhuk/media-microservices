@@ -1,0 +1,88 @@
+#VPS hosting command and for CI/CD 
+# 1. SSH into the VPS using root user
+ssh root@62.72.30.37
+
+# 2. (Linux ubuntu )Update the packages list to ensure you have the latest information 
+sudo apt update -y
+
+#3. Install necessary packages for Docker installation (transport, certificates, curl)
+sudo apt install -y apt-transport-https ca-certificates curl software-properties-common 
+
+#4. Add the Docker GPG key to verify the authentity of the Docker package
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg 
+
+#5. Add the Docker repository to the source list to install Docker from
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu
+
+#6. Update the package list again after adding the Docker repository
+sudo apt update -y
+
+#7. Install Docker from the newly added Docker repository
+sudo apt install -y docker-ce
+
+#8. Start Docker service and enable it to start on boot
+sudo systemctl start docker
+sudo systemctl enable docker
+
+#9. Check the Docker version to ensure it's installed correctly
+docker --version
+
+#10. Install Docker Compose by fetching the binary from github
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+#11. Make the Docker Compose binary executable
+sudo chmod +x /usr/local/bin/docker-compose
+
+#12. Check the installed version of Docker Compose
+docker-compose --version
+
+#13. Create the directory where you want to store your project
+# For example, create a directory inside /home/root/ called 'projects'
+sudo mkdir -p /home/root/projects
+
+#14.Clone your GitHub repository using SSH (replace <token> and the repository path with your actual values)
+git clone https://<token>@github.com/your-username/your-repo.git
+
+#15. Open Visual Studio Code via remote SSH. Add your password if prompted to connect to the VPS
+
+#16. In VS Code, press `Ctrl + Shift + P` and navigate to `/home/root/projects/node-micro-practice`.
+
+#17. Open the folder `/home/root/projects/node-micro-practice` in VS Code
+
+#18. Add environment variables for each service inside the VPS in your VS Code project
+#For API-gateway
+PORT=300
+NODE_ENV = development
+IDENTITY_SERVICE_URL = http://identity-service:3001
+POST_SERVICE_URL = http://post-service:3002
+MEDIA_SERVICE_URL = http://media-service:3003
+SEARCH_SERVICE_URL = http://search-service:3004
+REDIS_URL=redis://redis:6379
+RABBITMQ_URL = rabbitmq://rabbitmq:5672
+
+#19. Manually copy your SSH public key to the VPS by generating a new SSH key pair:
+ssh-keygen -t rsa -b 4096 -C "test2025@example.com"
+
+#20. View the content of your SSH private key (path provided for windows example):
+Get-Content C:\Users\sanga\.ssh\id_rsa
+
+#21. Open a terminal in your VPS and login
+ssh root@32.72.30.37
+
+#22. Navigate to the SSH directory and list contents
+ls -ld ~/.ssh
+
+#23. Set correct permissions for the SSH directory (700 ensures it's secure)
+chmod 700 ~/.ssh
+
+next steps:
+#check if docker is working
+sudo systemctl status docker
+#if not running 
+sudo systemctl start docker
+docker-compose --version
+sudo docker-compose build
+sudo docker-compose up -d
+sudo docker-compose ps 
+sudo docker-compose logs 
+sudo docker-compose logs -f servicename
